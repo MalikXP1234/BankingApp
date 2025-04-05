@@ -1,3 +1,4 @@
+from math import floor
 from sys import dont_write_bytecode
 
 from pywebio.input import *
@@ -22,6 +23,9 @@ class LoginAccount:
         self.email = email
         self.phone_number = phone_number
         self.password = password
+
+    def __str__(self):
+        return f"{self.fullname} {self.username} {self.dob} {self.email} {self.phone_number} {self.password}"
 
 class BankAccount:
     BankName = None
