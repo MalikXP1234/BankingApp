@@ -64,11 +64,11 @@ card = """<div class="py-3 text-center container ">
 </div>
 """
 
-
+# This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
 
-
+# This is the login where the user can log their account with their data from the file
 def user_login():
     clear()
     put_html("<h1>Login</h1>")
@@ -88,7 +88,7 @@ def user_login():
     else:
         toast("sorry your password should be bigger than 5 but smaller than 8")
 
-
+# This is where the user can sign up and add their data onto the database
 def user_signup():
     clear()
     back_button("?app=login")
@@ -107,12 +107,12 @@ def user_signup():
 
     put_code(signup_data)
 
-
+# This is when the user can log out if they want to
 def user_logout():
     clear()
     put_html("<h1>Logout</h1>")
 
-
+# This is where the user can select accounts and create them for data
 @config(theme="dark")
 def home_page():
     clear()
@@ -134,7 +134,7 @@ def home_page():
     for i in range(5):
         put_html(card)
 
-
+# This is the profile page which will output the users infomation and will have function to change
 @config(theme="dark")
 def profile_page():
     clear()
@@ -178,7 +178,7 @@ def profile_page():
 </div>
 """)
 
-
+# This is the product page where the user can select loans for their account depending on their needs
 @config(theme="dark")
 def product_page():
     clear()
@@ -199,7 +199,7 @@ def product_page():
 </div>
 </div>""")
 
-
+# This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
 def payment_page():
     clear()
@@ -227,7 +227,7 @@ def payment_page():
 
     # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
 
-
+# This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
 def password_reset_page():
     clear()
