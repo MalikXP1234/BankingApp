@@ -1,3 +1,4 @@
+from sys import dont_write_bytecode
 
 from pywebio.input import *
 from pywebio.output import *
@@ -142,7 +143,22 @@ def user_signup():
         ], name='action', help_text='actions'),
     ])
 
-    # this would then be used to input into a text file. After that it will create the class item here of the object then put that in the code on the text file, then it would read and put it in the class
+    fullname = signup_data["FullName"]
+    username= signup_data["username"]
+    dob = signup_data["DOF"]
+    email_address = signup_data["email_address"]
+    phone_number = signup_data["phone_number"]
+    password = signup_data["password"]
+
+    toast(f"{fullname}, {username}, {dob}, {email_address}, {phone_number}, {password}, ")
+
+    account = LoginAccount(fullname, username, dob,email_address, phone_number, password)
+
+    login_file = open("data_file.txt", "w")
+    login_file.write(f"{account}")
+    login_file.close()
+
+    toast(f"{account}")
 
     put_code(signup_data)
 
