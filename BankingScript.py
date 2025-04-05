@@ -121,11 +121,17 @@ def user_login():
     username = data["name"]
     password = data["password"]
 
-    for line in open("data_file.txt", "r").readlines():
-        data = line.split()
+    for row in open("data_file.txt", "r").readlines():
+        data = row.split()
 
         if username == data[1] and password == data[5]:
             home_page()
+
+            global profile_name
+            profile_name = data[0]
+            profile_date_of_birth = data[2]
+            profile_email = data[3]
+            profile_number = data[4]
 
 
 
@@ -157,7 +163,6 @@ def user_signup():
     phone_number = signup_data["phone_number"]
     password = signup_data["password"]
 
-    toast(f"{fullname}, {username}, {dob}, {email_address}, {phone_number}, {password}, ")
 
     account = LoginAccount(fullname, username, dob,email_address, phone_number, password)
 
@@ -204,29 +209,17 @@ def profile_page():
     put_html(navbar)
     put_html("<h1>Profile</h1>")
 
-    put_html(""" <div class="container mt-5">
 
+
+    put_html(f""" <div class="container mt-5">
     <div class="form-floating">
-
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="Even Micheal Jr">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="{profile_name}">
         <label for="floatingInput">Name</label>
     </div>
     <!-- this input is invalid -->
     <div class="form-floating">
         <input type="date" class="form-control is-invalid" id="floatingDOB">
         <label for="floatingDOB">Data of birth</label>
-    </div>
-    <div class="form-floating">
-        <input type="text" class="form-control" id="floatingAddress" placeholder="Password" value="NE4TQE">
-        <label for="floatingAddress">Address</label>
-    </div>
-    <div class="form-floating">
-        <input type="Text" class="form-control is-invalid" id="floatingStreet" placeholder="Password" value="">
-        <label for="floatingStreet">Street</label>
-    </div>
-    <div class="form-floating">
-        <input type="text" class="form-control" id="floatingCountry" placeholder="Password" value="United Kingdom">
-        <label for="floatingCountry">Country</label>
     </div>
     <div class="form-floating">
         <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="Evens12@gmail.com">
@@ -236,7 +229,6 @@ def profile_page():
         <input type="number" class="form-control" id="floatingNumber" placeholder="Password" value="07973433245">
         <label for="floatingNumber">Mobile Number</label>
     </div>
-
 </div>
 """)
 
