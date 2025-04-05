@@ -27,6 +27,8 @@ class LoginAccount:
     def __str__(self):
         return f"{self.fullname} {self.username} {self.dob} {self.email} {self.phone_number} {self.password}"
 
+    # CREATE SUBROUTINES TO CHANGE THE PROFILE DATA AND WRITE IT ON THE FILE
+
 class BankAccount:
     BankName = None
     BankNumber = None
@@ -126,8 +128,7 @@ def user_login():
 
         if username == data[1] and password == data[5]:
             home_page()
-
-            global profile_name
+            global profile_name # FIXXXXXXXXXXXXXX THIS
             profile_name = data[0]
             profile_date_of_birth = data[2]
             profile_email = data[3]
@@ -209,7 +210,7 @@ def profile_page():
     put_html(navbar)
     put_html("<h1>Profile</h1>")
 
-
+    # CHANGE UPDATE HERE DONT FORGET UPDATRE PELASE
 
     put_html(f""" <div class="container mt-5">
     <div class="form-floating">
