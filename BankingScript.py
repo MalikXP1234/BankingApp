@@ -3,9 +3,24 @@ from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 
+# THIS IS THE BANK CURRENCY
+XPBank = 1000000
+
 class LoginAccount:
+    fullname = None
     username = None
+    dob = None
+    email = None
+    phone_number = None
     password = None
+
+    def __init__(self, fullname, username, dob, email, phone_number,password):
+        self.fullname = fullname
+        self.username = username
+        self.dob = dob
+        self.email = email
+        self.phone_number = phone_number
+        self.password = password
 
 class BankAccount:
     BankName = None
@@ -115,8 +130,12 @@ def user_signup():
     put_html("<h1>Sign Up</h1>")
 
     signup_data = input_group('Add user', [
+        input('Full Name', type=TEXT, name='FullName', required=True),
         input('username', type=TEXT, name='username', required=True),
-        input('password', type=PASSWORD, name='password', required=True),
+        input('Date of birth', type=DATE, name='DOF', required=True),
+        input('email address', type=TEXT, name='email_address', required=True),
+        input('phone number', type=NUMBER, name='phone_number', required=True),
+        input('password', type=TEXT, name='password', required=True),
         actions('', [
             {'label': 'Save', 'value': 'save'},
             {'label': 'Save and add next', 'value': 'save_and_continue'},
