@@ -118,14 +118,17 @@ def user_login():
         input("Enter username: ", name="name", required=True),
         input("Enter password: ", name="password", required=True, type=PASSWORD)], cancelable=True)
 
-    if len(data["password"]) > 5 > 10:
-        username = data["name"]
-        password = data["password"]
+    username = data["name"]
+    password = data["password"]
 
-        toast(f"Welcome {username} and your password is {password}")
-        home_page()
-    else:
-        toast("sorry your password should be bigger than 5 but smaller than 8")
+    for line in open("data_file.txt", "r").readlines():
+        data = line.split()
+
+        if username == data[1] and password == data[5]:
+            home_page()
+
+
+
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
