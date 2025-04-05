@@ -3,6 +3,24 @@ from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 
+class LoginAccount:
+    username = None
+    password = None
+
+class BankAccount:
+    BankName = None
+    BankNumber = None
+    BankCode = None
+    BankBalance = None
+
+class PayeeAccount:
+    PayeeName = None
+
+class LoansAccount:
+    LoanName = None
+
+
+
 email_list = []
 
 navbar = """<div class="fixed-bottom">
@@ -69,6 +87,7 @@ def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
 
 # This is the login where the user can log their account with their data from the file
+@config(theme="dark")
 def user_login():
     clear()
     put_html("<h1>Login</h1>")
@@ -89,6 +108,7 @@ def user_login():
         toast("sorry your password should be bigger than 5 but smaller than 8")
 
 # This is where the user can sign up and add their data onto the database
+@config(theme="dark")
 def user_signup():
     clear()
     back_button("?app=login")
