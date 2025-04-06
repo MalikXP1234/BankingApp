@@ -1,11 +1,12 @@
-from math import floor
-from sys import dont_write_bytecode
 
 from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 
+
+
 AccountList = []
+
 
 navbar = """<div class="fixed-bottom">
    <nav class="navbar-dark bg-dark">
@@ -69,6 +70,7 @@ card = """<div class="py-3 text-center container ">
 # THIS IS THE BANK CURRENCY
 XPBank = 1000000
 
+
 profile_name = ""
 profile_date_of_birth = 0
 profile_email = ""
@@ -93,12 +95,15 @@ class LoginAccount:
     def __str__(self):
         return f"{self.fullname} {self.username} {self.dob} {self.email} {self.phone_number} {self.password}"
 
-    def change_email(self, replace_email):
-        self.email =+ 1
+    @classmethod
+    def change_email(cls, replace_email):
+        cls.email = replace_email
+        return cls.email
 
-    def change_phone_number(self, replace_number):
-        self.phone_number =+1
-
+    @classmethod
+    def change_phone_number(cls, replace_number):
+        cls.phone_number = replace_number
+        return cls.phone_number
 
 class BankAccount:
     BankName = None
@@ -135,7 +140,6 @@ def user_login():
         data = row.split()
 
         if username == data[1] and password == data[5]:
-            home_page()
 
             global profile_name
             global profile_date_of_birth
@@ -147,7 +151,16 @@ def user_login():
             profile_email = data[3]
             profile_number = data[4]
 
-            main_account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
+            global AccountList
+
+            account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
+
+            home_page()
+
+            return account
+
+
+main_account = user_login()
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -234,7 +247,7 @@ def profile_page():
         <label for="floatingDOB">Data of birth</label>
     </div>
     <div class="form-floating">
-        <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="{profile_email}">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="{main_account.email}">
         <label for="floatingEmail">Email Address</label>
     </div>
     <div class="form-floating">
@@ -243,6 +256,11 @@ def profile_page():
     </div>
 </div>
 """)
+
+    update = actions('Would you like to update your Profile??', ['Yes Please', 'No Thanks'],)
+
+    if update == 'Yes Please':
+        update_page()
 
 # This is the product page where the user can select loans for their account depending on their needs
 @config(theme="dark")
@@ -264,6 +282,21 @@ def product_page():
   <a href="#" class="btn btn-primary">Select this LOAN/a>
 </div>
 </div>""")
+
+def update_page():
+    clear()
+    back_button("?app=profile")
+    put_html("<h1>Update Profile</h1>")
+
+    option = select("What would you like to update?", options= ["Name","Data of birth","Email address", "Phone number"])
+
+    global main_account
+
+
+
+    if option == "Email address":
+        new_email = input("What do you want ur new email to be?")
+        main_account.change_email(new_email)
 
 # This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
