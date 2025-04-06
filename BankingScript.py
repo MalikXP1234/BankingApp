@@ -5,45 +5,7 @@ from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 
-# THIS IS THE BANK CURRENCY
-XPBank = 1000000
-
-class LoginAccount:
-    fullname = None
-    username = None
-    dob = None
-    email = None
-    phone_number = None
-    password = None
-
-    def __init__(self, fullname, username, dob, email, phone_number,password):
-        self.fullname = fullname
-        self.username = username
-        self.dob = dob
-        self.email = email
-        self.phone_number = phone_number
-        self.password = password
-
-    def __str__(self):
-        return f"{self.fullname} {self.username} {self.dob} {self.email} {self.phone_number} {self.password}"
-
-    # CREATE SUBROUTINES TO CHANGE THE PROFILE DATA AND WRITE IT ON THE FILE
-
-class BankAccount:
-    BankName = None
-    BankNumber = None
-    BankCode = None
-    BankBalance = None
-
-class PayeeAccount:
-    PayeeName = None
-
-class LoansAccount:
-    LoanName = None
-
-
-
-email_list = []
+AccountList = []
 
 navbar = """<div class="fixed-bottom">
    <nav class="navbar-dark bg-dark">
@@ -104,6 +66,52 @@ card = """<div class="py-3 text-center container ">
 </div>
 """
 
+# THIS IS THE BANK CURRENCY
+XPBank = 1000000
+
+profile_name = ""
+profile_date_of_birth = 0
+profile_email = ""
+profile_number = 0
+
+class LoginAccount:
+    fullname = None
+    username = None
+    dob = None
+    email = None
+    phone_number = None
+    password = None
+
+    def __init__(self, fullname, username, dob, email, phone_number,password):
+        self.fullname = fullname
+        self.username = username
+        self.dob = dob
+        self.email = email
+        self.phone_number = phone_number
+        self.password = password
+
+    def __str__(self):
+        return f"{self.fullname} {self.username} {self.dob} {self.email} {self.phone_number} {self.password}"
+
+    def change_email(self, replace_email):
+        self.email =+ 1
+
+    def change_phone_number(self, replace_number):
+        self.phone_number =+1
+
+
+class BankAccount:
+    BankName = None
+    BankNumber = None
+    BankCode = None
+    BankBalance = None
+
+class PayeeAccount:
+    PayeeName = None
+
+class LoansAccount:
+    LoanName = None
+
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
@@ -128,14 +136,18 @@ def user_login():
 
         if username == data[1] and password == data[5]:
             home_page()
-            global profile_name # FIXXXXXXXXXXXXXX THIS
+
+            global profile_name
+            global profile_date_of_birth
+            global profile_email
+            global profile_number
+
             profile_name = data[0]
             profile_date_of_birth = data[2]
             profile_email = data[3]
             profile_number = data[4]
 
-
-
+            main_account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -164,8 +176,7 @@ def user_signup():
     phone_number = signup_data["phone_number"]
     password = signup_data["password"]
 
-
-    account = LoginAccount(fullname, username, dob,email_address, phone_number, password)
+    account = LoginAccount(fullname, username, dob, email_address, phone_number, password)
 
     login_file = open("data_file.txt", "w")
     login_file.write(f"{account}")
@@ -219,15 +230,15 @@ def profile_page():
     </div>
     <!-- this input is invalid -->
     <div class="form-floating">
-        <input type="date" class="form-control is-invalid" id="floatingDOB">
+        <input type="date" class="form-control is-invalid" id="floatingDOB" value="{profile_date_of_birth}" >
         <label for="floatingDOB">Data of birth</label>
     </div>
     <div class="form-floating">
-        <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="Evens12@gmail.com">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="{profile_email}">
         <label for="floatingEmail">Email Address</label>
     </div>
     <div class="form-floating">
-        <input type="number" class="form-control" id="floatingNumber" placeholder="Password" value="07973433245">
+        <input type="number" class="form-control" id="floatingNumber" placeholder="Password" value="{profile_number}">
         <label for="floatingNumber">Mobile Number</label>
     </div>
 </div>
@@ -291,9 +302,9 @@ def password_reset_page():
 
     old_email = input("Please enter your old email address so we can reset ur password:")
 
-    for email in email_list:
-        if email == old_email:
-            put_text("I am happy to say that we have found your email address and gave your new code")
+    # for email in email_list:
+    #  if email == old_email:
+    #   put_text("I am happy to say that we have found your email address and gave your new code")
 
 # This is the route section for the program
 if __name__ == '__main__':
