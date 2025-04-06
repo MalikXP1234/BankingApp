@@ -3,10 +3,7 @@ from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 
-
-
 AccountList = []
-
 
 navbar = """<div class="fixed-bottom">
    <nav class="navbar-dark bg-dark">
@@ -117,6 +114,9 @@ class PayeeAccount:
 class LoansAccount:
     LoanName = None
 
+
+AccountList.append(LoginAccount("AadamMalik","Malik_xp",25/11/2005,"adadxpmalik@gmail.com", "342424234", "eqqwdwe")) # Admin account :>)
+
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
@@ -151,16 +151,16 @@ def user_login():
             profile_email = data[3]
             profile_number = data[4]
 
-            global AccountList
 
             account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
+            AccountList.append(account)
 
             home_page()
 
-            return account
 
 
-main_account = user_login()
+
+main_account = user_login
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -236,26 +236,29 @@ def profile_page():
 
     # CHANGE UPDATE HERE DONT FORGET UPDATRE PELASE
 
-    put_html(f""" <div class="container mt-5">
-    <div class="form-floating">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="{profile_name}">
-        <label for="floatingInput">Name</label>
-    </div>
-    <!-- this input is invalid -->
-    <div class="form-floating">
-        <input type="date" class="form-control is-invalid" id="floatingDOB" value="{profile_date_of_birth}" >
-        <label for="floatingDOB">Data of birth</label>
-    </div>
-    <div class="form-floating">
-        <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="{main_account.email}">
-        <label for="floatingEmail">Email Address</label>
-    </div>
-    <div class="form-floating">
-        <input type="number" class="form-control" id="floatingNumber" placeholder="Password" value="{profile_number}">
-        <label for="floatingNumber">Mobile Number</label>
-    </div>
-</div>
-""")
+    for data in AccountList:
+        if data.fullname == profile_name:
+            put_html(f""" <div class="container mt-5">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="{data.username}">
+                    <label for="floatingInput">Name</label>
+                </div>
+                <!-- this input is invalid -->
+                <div class="form-floating">
+                    <input type="date" class="form-control is-invalid" id="floatingDOB" value="{data.dob}" >
+                    <label for="floatingDOB">Data of birth</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingEmail" placeholder="Password" value="{data.email}">
+                    <label for="floatingEmail">Email Address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="floatingNumber" placeholder="Password" value="{data.phone_number}">
+                    <label for="floatingNumber">Mobile Number</label>
+                </div>
+            </div>
+            """)
+
 
     update = actions('Would you like to update your Profile??', ['Yes Please', 'No Thanks'],)
 
@@ -290,13 +293,14 @@ def update_page():
 
     option = select("What would you like to update?", options= ["Name","Data of birth","Email address", "Phone number"])
 
-    global main_account
-
-
-
     if option == "Email address":
         new_email = input("What do you want ur new email to be?")
-        main_account.change_email(new_email)
+
+        for data in AccountList:
+            if data.fullname == profile_name:
+                data.email = data.change_email(new_email)
+                toast("Yipee you now have ur new data")
+                toast(data.email)
 
 # This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
@@ -335,9 +339,15 @@ def password_reset_page():
 
     old_email = input("Please enter your old email address so we can reset ur password:")
 
-    # for email in email_list:
-    #  if email == old_email:
-    #   put_text("I am happy to say that we have found your email address and gave your new code")
+    for row in open("data_file.txt", "r").readlines():
+        item = row.split()
+
+        if item[3] == old_email:
+            put_html("<h1>I am happy to say that the system has found your email so please look at it to change your password</h1>")
+        else:
+            put_html("ERROR")
+
+
 
 # This is the route section for the program
 if __name__ == '__main__':
