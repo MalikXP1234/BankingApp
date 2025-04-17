@@ -157,9 +157,6 @@ def user_login():
 
             home_page()
 
-
-
-
 main_account = user_login
 
 # This is where the user can sign up and add their data onto the database
@@ -347,11 +344,21 @@ def password_reset_page():
         else:
             put_html("ERROR")
 
+@config(theme="dark")
+def welcome_page():
+    clear()
+    put_html("<h1>Welcome Page</h1>").style("text-align:center;")
 
+    put_html(
+        "<h2>Welcome to the XP App welcome page, this is where you will be able to find the login and sign up button to get access to our page</h2>").style(
+        "text-align:center;")
+
+    put_buttons(["Register", "Login"], onclick=[user_signup, user_login]).style("text-align:center;")
 
 # This is the route section for the program
 if __name__ == '__main__':
     routes = {
+        "welcome_page": welcome_page,
         "login": user_login,
         "signup": user_signup,
         "logout": user_logout,
