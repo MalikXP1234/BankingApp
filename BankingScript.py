@@ -5,6 +5,7 @@ from pywebio.output import *
 from pywebio import start_server, config
 
 AccountList = []
+BankList = []
 
 navbar = """<div class="fixed-bottom">
    <nav class="navbar-dark bg-dark">
@@ -50,29 +51,19 @@ navbar = """<div class="fixed-bottom">
     </nav>
   </div>"""
 
-card = """<div class="py-3 text-center container ">
-<div class="card mx-auto" style="width: 25rem;">
-  <div class="card-body">
-    <h5 class="card-title">[ACCOUNT NAME]</h5>
-     <ul class="list-group list-group-flush">
-    <li class="list-group-item">Account Number: [NUMBER]</li>
-    <li class="list-group-item"> Account Code: [CODE]</li>
-    <li class="list-group-item">Balance: [BALANCE]</li>
-  </ul>
-  </div>
-  <a href="#" class="btn btn-primary">Select this Account</a>
-</div>
-</div>
-"""
-
 # THIS IS THE BANK CURRENCY
 XPBank = 1000000
-
 
 profile_name = ""
 profile_date_of_birth = 0
 profile_email = ""
 profile_number = 0
+
+account_name = ""
+account_number = 0
+pin_number = 0
+account_money = 0
+
 
 class LoginAccount:
     fullname = None
@@ -82,7 +73,7 @@ class LoginAccount:
     phone_number = None
     password = None
 
-    def __init__(self, fullname, username, dob, email, phone_number,password):
+    def __init__(self, fullname, username, dob, email, phone_number, password):
         self.fullname = fullname
         self.username = username
         self.dob = dob
@@ -103,26 +94,41 @@ class LoginAccount:
         cls.phone_number = replace_number
         return cls.phone_number
 
+
 class BankAccount:
     BankName = None
     BankNumber = None
     BankCode = None
     BankBalance = None
 
+    def __init__(self, bank_name, bank_number, bank_code, bank_balance):
+        self.BankName = bank_name
+        self.BankNumber = bank_number
+        self.BankCode = bank_code
+        self.BankBalance = bank_balance
+
+    def __str__(self):
+        return f"{self.BankName}, {self.BankNumber}, {self.BankCode}, {self.BankBalance}"
 
 
 class PayeeAccount:
     PayeeName = None
 
+
 class LoansAccount:
     LoanName = None
 
 
-AccountList.append(LoginAccount("AadamMalik","Malik_xp",25/11/2005,"adadxpmalik@gmail.com", "342424234", "eqqwdwe")) # Admin account :>)
+AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadxpmalik@gmail.com", "342424234",
+                                "eqqwdwe"))  # Admin account :>)
+
+BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000"))  # Admin bank account :>)
+
 
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
+
 
 # This is the login where the user can log their account with their data from the file
 @config(theme="dark")
@@ -143,7 +149,6 @@ def user_login():
         data = row.split()
 
         if username == data[1] and password == data[5]:
-
             global profile_name
             global profile_date_of_birth
             global profile_email
@@ -154,13 +159,14 @@ def user_login():
             profile_email = data[3]
             profile_number = data[4]
 
-
             account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
             AccountList.append(account)
 
             home_page()
 
+
 main_account = user_login
+
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -183,7 +189,7 @@ def user_signup():
     ])
 
     fullname = signup_data["FullName"]
-    username= signup_data["username"]
+    username = signup_data["username"]
     dob = signup_data["DOF"]
     email_address = signup_data["email_address"]
     phone_number = signup_data["phone_number"]
@@ -199,10 +205,12 @@ def user_signup():
 
     put_code(signup_data)
 
+
 # This is when the user can log out if they want to
 def user_logout():
     clear()
     put_html("<h1>Logout</h1>")
+
 
 # This allows the user to create the bank account
 def create_bank():
@@ -219,13 +227,16 @@ def create_bank():
     if len(create_data["pin"]) == 6:
         toast("we will now create your account")
 
+        global account_name
+        global account_number
+        global pin_number
+        global account_money
+
         account_name = create_data["account"]
-        account_number = random.randint(100000,999999)
+        account_number = random.randint(100000, 999999)
         pin_number = create_data["pin"]
         account_money = create_data["money"]
-
-
-
+        BankList.append(BankAccount(account_name, account_number, pin_number, account_money))
 
         put_html(f"""<div class="card" style="width: 20rem;">
   <div class="card-body">
@@ -242,13 +253,15 @@ def create_bank():
         toast("please input 6 Digit")
         home_page()
 
+
     options = actions("Does this look good for your account?", ['Yes', 'No'])
 
+
     if options == "Yes":
-        # This is where the class object would be used and created for the loop in home page
         home_page()
     else:
-        toast("Sorry for the issue")
+        toast("Sorry for the issue, please delete if you are unhappy")
+
 
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
@@ -272,11 +285,22 @@ def home_page():
     if options == "Yes":
         create_bank()
     else:
+        for account in BankList:
+            put_html(f"""<div class="py-3 text-center container ">
+<div class="card mx-auto" style="width: 25rem;">
+  <div class="card-body">
+    <h5 class="card-title">{account.BankName}</h5>
+     <ul class="list-group list-group-flush">
+    <li class="list-group-item">Account Number: {account.BankNumber}</li>
+    <li class="list-group-item"> Account Code: {account.BankCode}</li>
+    <li class="list-group-item">Balance: {account.BankBalance}</li>
+  </ul>
+  </div>
+  <a href="#" class="btn btn-primary">Select this Account</a>
+</div>
+</div>
+""")
 
-        i = 5
-
-        for i in range(5):
-         put_html(card)
 
 # This is the profile page which will output the users infomation and will have function to change
 @config(theme="dark")
@@ -311,11 +335,11 @@ def profile_page():
             </div>
             """)
 
-
-    update = actions('Would you like to update your Profile??', ['Yes Please', 'No Thanks'],)
+    update = actions('Would you like to update your Profile??', ['Yes Please', 'No Thanks'], )
 
     if update == 'Yes Please':
         update_page()
+
 
 # This is the product page where the user can select loans for their account depending on their needs
 @config(theme="dark")
@@ -338,12 +362,14 @@ def product_page():
 </div>
 </div>""")
 
+
 def update_page():
     clear()
     back_button("?app=profile")
     put_html("<h1>Update Profile</h1>")
 
-    option = select("What would you like to update?", options= ["Name","Data of birth","Email address", "Phone number"])
+    option = select("What would you like to update?",
+                    options=["Name", "Data of birth", "Email address", "Phone number"])
 
     if option == "Email address":
         new_email = input("What do you want ur new email to be?")
@@ -353,6 +379,7 @@ def update_page():
                 data.email = data.change_email(new_email)
                 toast("Yipee you now have ur new data")
                 toast(data.email)
+
 
 # This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
@@ -382,6 +409,7 @@ def payment_page():
 
     # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
 
+
 # This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
 def password_reset_page():
@@ -395,9 +423,11 @@ def password_reset_page():
         item = row.split()
 
         if item[3] == old_email:
-            put_html("<h1>I am happy to say that the system has found your email so please look at it to change your password</h1>")
+            put_html(
+                "<h1>I am happy to say that the system has found your email so please look at it to change your password</h1>")
         else:
             put_html("ERROR")
+
 
 @config(theme="dark")
 def welcome_page():
@@ -409,6 +439,7 @@ def welcome_page():
         "text-align:center;")
 
     put_buttons(["Register", "Login"], onclick=[user_signup, user_login]).style("text-align:center;")
+
 
 # This is the route section for the program
 if __name__ == '__main__':
