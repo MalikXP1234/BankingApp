@@ -201,6 +201,45 @@ def user_logout():
     clear()
     put_html("<h1>Logout</h1>")
 
+# This allows the user to create the bank account
+def create_bank():
+    clear()
+    back_button("?app=create")
+    put_html("<h1>Create Page</h1>")
+
+    create_data = input_group("Please input your data", [
+        input("what would you like to call your bank account", name="account", required=True),
+        input("Please enter your 6 digit pin code so you can have protection", name="pin", required=True)
+    ])
+
+    if len(create_data["pin"]) == 6:
+        toast("we will now create your account")
+
+        account_name = create_data["account"]
+        pin_number = create_data["pin"]
+
+        put_html(f"""<div class="card" style="width: 20rem;">
+  <div class="card-body">
+    <h5 class="card-title">Current data</h5>
+    <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
+    <p class="card-text">Account Name : {account_name}</p>
+    <p class="card-text">Personal Name : [stuff here]</p>
+    <p class="card-text">Account Number : [stuff here]</p>
+    <p class="card-text">PIN : {pin_number}</p>
+  </div>
+</div>""").style("text-align:center;")
+    else:
+        toast("please input 6 Digit")
+        home_page()
+
+    options = actions("Does this look good for your account?", ['Yes', 'No'])
+
+    if options == "Yes":
+        # This is where the class object would be used and created for the loop in home page
+        home_page()
+    else:
+        toast("Sorry for the issue")
+
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
 def home_page():
@@ -218,10 +257,16 @@ def home_page():
         </div>
     </div>""")
 
-    i = 5
+    options = actions("would you like to create an bank account / You can have up to 3", ['Yes', 'No'])
 
-    for i in range(5):
-        put_html(card)
+    if options == "Yes":
+        create_bank()
+    else:
+
+        i = 5
+
+        for i in range(5):
+         put_html(card)
 
 # This is the profile page which will output the users infomation and will have function to change
 @config(theme="dark")
