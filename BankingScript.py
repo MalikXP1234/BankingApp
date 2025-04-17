@@ -54,16 +54,18 @@ navbar = """<div class="fixed-bottom">
 # THIS IS THE BANK CURRENCY
 XPBank = 1000000
 
+# this is global variables for profile page
 profile_name = ""
 profile_date_of_birth = 0
 profile_email = ""
 profile_number = 0
 
+# this is global variables for account page
 account_name = ""
 account_number = 0
 pin_number = 0
 account_money = 0
-
+UID = 0
 
 class LoginAccount:
     fullname = None
@@ -94,41 +96,48 @@ class LoginAccount:
         cls.phone_number = replace_number
         return cls.phone_number
 
+    @classmethod
+    def change_name(cls, replace_username):
+        cls.username = replace_username
+        return cls.username
+
+    @classmethod
+    def change_date_of_birth(cls, replace_data_of_birth):
+        cls.dob = replace_data_of_birth
+        return cls.dob
+
 
 class BankAccount:
     BankName = None
     BankNumber = None
     BankCode = None
     BankBalance = None
+    uniqueCode= None
 
-    def __init__(self, bank_name, bank_number, bank_code, bank_balance):
+    def __init__(self, bank_name, bank_number, bank_code, bank_balance, unique):
         self.BankName = bank_name
         self.BankNumber = bank_number
         self.BankCode = bank_code
         self.BankBalance = bank_balance
+        self.uniqueCode = unique
 
     def __str__(self):
         return f"{self.BankName}, {self.BankNumber}, {self.BankCode}, {self.BankBalance}"
 
-
 class PayeeAccount:
     PayeeName = None
-
 
 class LoansAccount:
     LoanName = None
 
-
 AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadxpmalik@gmail.com", "342424234",
                                 "eqqwdwe"))  # Admin account :>)
 
-BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000"))  # Admin bank account :>)
-
+BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))  # Admin bank account :>)
 
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
-
 
 # This is the login where the user can log their account with their data from the file
 @config(theme="dark")
@@ -164,9 +173,7 @@ def user_login():
 
             home_page()
 
-
 main_account = user_login
-
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -205,12 +212,10 @@ def user_signup():
 
     put_code(signup_data)
 
-
 # This is when the user can log out if they want to
 def user_logout():
     clear()
     put_html("<h1>Logout</h1>")
-
 
 # This allows the user to create the bank account
 def create_bank():
@@ -231,12 +236,14 @@ def create_bank():
         global account_number
         global pin_number
         global account_money
+        global UID
 
         account_name = create_data["account"]
         account_number = random.randint(100000, 999999)
+        UID = random.randint(0,100)
         pin_number = create_data["pin"]
         account_money = create_data["money"]
-        BankList.append(BankAccount(account_name, account_number, pin_number, account_money))
+        BankList.append(BankAccount(account_name, account_number, pin_number, account_money,UID))
 
         put_html(f"""<div class="card" style="width: 20rem;">
   <div class="card-body">
@@ -262,7 +269,6 @@ def create_bank():
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
 
-
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
 def home_page():
@@ -280,7 +286,7 @@ def home_page():
         </div>
     </div>""")
 
-    options = actions("would you like to create an bank account / You can have up to 3", ['Yes', 'No'])
+    options = actions("would you like to create an bank account", ['Yes', 'No'])
 
     if options == "Yes":
         create_bank()
@@ -301,7 +307,6 @@ def home_page():
 </div>
 """)
 
-
 # This is the profile page which will output the users infomation and will have function to change
 @config(theme="dark")
 def profile_page():
@@ -309,8 +314,6 @@ def profile_page():
     back_button("?app=home")
     put_html(navbar)
     put_html("<h1>Profile</h1>")
-
-    # CHANGE UPDATE HERE DONT FORGET UPDATRE PELASE
 
     for data in AccountList:
         if data.fullname == profile_name:
@@ -340,7 +343,6 @@ def profile_page():
     if update == 'Yes Please':
         update_page()
 
-
 # This is the product page where the user can select loans for their account depending on their needs
 @config(theme="dark")
 def product_page():
@@ -362,24 +364,37 @@ def product_page():
 </div>
 </div>""")
 
-
 def update_page():
     clear()
     back_button("?app=profile")
     put_html("<h1>Update Profile</h1>")
 
-    option = select("What would you like to update?",
-                    options=["Name", "Data of birth", "Email address", "Phone number"])
+    option = select("What would you like to update?",  # options for the user to choose from
+                    options=["Username", "Data of birth", "Email address", "Phone number"])
 
-    if option == "Email address":
-        new_email = input("What do you want ur new email to be?")
+    # This allows the user to change the data of their account, mostly their profile but also their data class account
+    for data in AccountList:
+        if data.fullname == profile_name:
 
-        for data in AccountList:
-            if data.fullname == profile_name:
+            if option == "Email address":
+                new_email = input("What do you want ur new email to be?", type = TEXT)
                 data.email = data.change_email(new_email)
-                toast("Yipee you now have ur new data")
+                toast("your info will be updated")
                 toast(data.email)
 
+            elif option == "Phone number":
+                new_phone_number = input("What would you like to input for your phone number",type = NUMBER)
+                data.phone_number = data.change_phone_number(new_phone_number)
+
+            elif option == "Data of birth":
+                new_date_of_birth = input("what would you like to input for your date of birth" ,type = DATE)
+                data.dob = data.change_date_of_birth(new_date_of_birth)
+
+            elif option == "Username":
+                new_username = input("what would you like your new username to be", type = TEXT)
+                data.username = data.change_name(new_username)
+            else:
+                toast("ERROR")
 
 # This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
@@ -409,7 +424,6 @@ def payment_page():
 
     # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
 
-
 # This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
 def password_reset_page():
@@ -428,7 +442,6 @@ def password_reset_page():
         else:
             put_html("ERROR")
 
-
 @config(theme="dark")
 def welcome_page():
     clear()
@@ -439,7 +452,6 @@ def welcome_page():
         "text-align:center;")
 
     put_buttons(["Register", "Login"], onclick=[user_signup, user_login]).style("text-align:center;")
-
 
 # This is the route section for the program
 if __name__ == '__main__':
