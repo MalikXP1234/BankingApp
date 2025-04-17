@@ -1,3 +1,4 @@
+import random
 
 from pywebio.input import *
 from pywebio.output import *
@@ -108,6 +109,8 @@ class BankAccount:
     BankCode = None
     BankBalance = None
 
+
+
 class PayeeAccount:
     PayeeName = None
 
@@ -209,23 +212,30 @@ def create_bank():
 
     create_data = input_group("Please input your data", [
         input("what would you like to call your bank account", name="account", required=True),
-        input("Please enter your 6 digit pin code so you can have protection", name="pin", required=True)
+        input("Please enter your 6 digit pin code so you can have protection", name="pin", required=True),
+        input("How much money would you like to put into your account?", name="money", required=True)
     ])
 
     if len(create_data["pin"]) == 6:
         toast("we will now create your account")
 
         account_name = create_data["account"]
+        account_number = random.randint(100000,999999)
         pin_number = create_data["pin"]
+        account_money = create_data["money"]
+
+
+
 
         put_html(f"""<div class="card" style="width: 20rem;">
   <div class="card-body">
     <h5 class="card-title">Current data</h5>
     <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
     <p class="card-text">Account Name : {account_name}</p>
-    <p class="card-text">Personal Name : [stuff here]</p>
-    <p class="card-text">Account Number : [stuff here]</p>
+    <p class="card-text">Personal Name : {profile_name}</p>
+    <p class="card-text">Account Number : {account_number}</p>
     <p class="card-text">PIN : {pin_number}</p>
+    <p class="card-text">Balance : {account_money}</p>
   </div>
 </div>""").style("text-align:center;")
     else:
