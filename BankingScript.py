@@ -1,4 +1,5 @@
 import random
+from venv import create
 
 from pywebio.input import *
 from pywebio.output import *
@@ -67,6 +68,11 @@ pin_number = 0
 account_money = 0
 UID = 0
 
+# this is global variables for payee page
+person_name = ""
+person_number = 0
+person_email = ""
+
 class LoginAccount:
     fullname = None
     username = None
@@ -126,6 +132,16 @@ class BankAccount:
 
 class PayeeAccount:
     PayeeName = None
+    PayeeNumber = None
+    PayeeEmail = None
+
+    def __init__(self, payee_name, payee_number, payee_email):
+        self.PayeeName = payee_name
+        self.PayeeNumber = payee_number
+        self.PayeeEmail = payee_email
+
+    def __str__(self):
+        return f"{self.PayeeName}, {self.PayeeNumber}, {self.PayeeEmail}"
 
 class LoansAccount:
     LoanName = None
@@ -172,6 +188,9 @@ def user_login():
             AccountList.append(account)
 
             home_page()
+
+        else:
+            toast("incorrect data, please refresh the page")
 
 main_account = user_login
 
@@ -269,6 +288,26 @@ def create_bank():
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
 
+@config(theme="dark")
+def create_payee():
+    clear()
+    back_button("?app=payment_page")
+    put_html("<h1>Create Payee</h1>")
+
+    create_person = input_group("Please input your data", [
+        input("What should we call your new friend?", name="person_name", required=True),
+        input("What is their phone number?", name="person_number", required=True),
+        input("What is their email?", name="person_email", required=True)
+    ])
+
+    global person_name
+    global person_number
+    global person_email
+
+    person_name = create_person["person_name"]
+    person_number = create_person["person_number"]
+    person_email = create_person["person_email"]
+
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
 def home_page():
@@ -302,7 +341,6 @@ def home_page():
     <li class="list-group-item">Balance: {account.BankBalance}</li>
   </ul>
   </div>
-  <a href="#" class="btn btn-primary">Select this Account</a>
 </div>
 </div>
 """)
@@ -408,19 +446,14 @@ def payment_page():
     put_html("<h1>Payment Page</h1>")
     put_html("<h2>Select Payee</h2>")
 
-    i = 5
+    options = actions("would you like to create a payee person", ['Yes', 'No'])
 
-    for i in range(5):
-        put_html("""<div class="card">
-      <div class="card-body">
-         <h5 class="card-title">[PAYEE NAME]</h5>
-         <ul class="list-group list-group-flush">
-        <li class="list-group-item">[PAYEE EMAIL]</li>
-        <li class="list-group-item">[PAYEE NUMBER]</li>
-      </ul>
-      </div>
-       <a href="#" class="btn btn-primary">Select this Payee</a>
-    </div>""")
+    if options == "Yes":
+        create_payee()
+    else:
+        for account in BankList:
+            put_html(f"""{account}""")
+
 
     # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
 
