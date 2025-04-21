@@ -7,6 +7,7 @@ from pywebio import start_server, config
 
 AccountList = []
 BankList = []
+PayeeList = []
 
 navbar = """<div class="fixed-bottom">
    <nav class="navbar-dark bg-dark">
@@ -150,6 +151,8 @@ AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadx
                                 "eqqwdwe"))  # Admin account :>)
 
 BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))  # Admin bank account :>)
+
+PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com")) # This is a example class
 
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
@@ -307,6 +310,24 @@ def create_payee():
     person_name = create_person["person_name"]
     person_number = create_person["person_number"]
     person_email = create_person["person_email"]
+    PayeeList.append(PayeeAccount(person_name, person_number, person_email))
+
+    put_html(f"""<div class="card" style="width: 20rem;">
+      <div class="card-body">
+        <h5 class="card-title">Current data</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
+        <p class="card-text">Person Name : {person_name}</p>
+        <p class="card-text">Person Number : {person_number}</p>
+        <p class="card-text">Person Email : {person_email}</p>
+      </div>
+    </div>""").style("text-align:center;")
+
+    options = actions("Does this look good for your new payee?", ['Yes', 'No'])
+
+    if options == "Yes":
+        payment_page()
+    else:
+        toast("Sorry for the issue, please delete if you are unhappy")
 
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
@@ -451,8 +472,15 @@ def payment_page():
     if options == "Yes":
         create_payee()
     else:
-        for account in BankList:
-            put_html(f"""{account}""")
+        for account in PayeeList:
+            put_html(f"""<div class="card">
+                  <div class="card-body">
+                     <h5 class="card-title">Person Name : {account.PayeeName}</h5>
+                     <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Person Number : {account.PayeeEmail}</li>
+                    <li class="list-group-item">Person Email : {account.PayeeNumber}]</li>
+                  </ul>
+                  </div>""")
 
 
     # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
