@@ -147,12 +147,14 @@ class PayeeAccount:
 class LoansAccount:
     LoanName = None
 
+# These are example class items that has been created to show you how it would look like if someone were to input data
+
 AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadxpmalik@gmail.com", "342424234",
-                                "eqqwdwe"))  # Admin account :>)
+                                "eqqwdwe"))
 
-BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))  # Admin bank account :)
+BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))
 
-PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com")) # This is aa example class
+PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com"))
 
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
@@ -295,6 +297,7 @@ def create_bank():
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
 
+# This allows the user to create the payee account
 @config(theme="dark")
 def create_payee():
     clear()
@@ -427,6 +430,7 @@ def product_page():
 </div>
 </div>""")
 
+# This allows the user to work on adding or replacing new data for the profile page by using class subroutines
 def update_page():
     clear()
     back_button("?app=profile")
@@ -507,6 +511,8 @@ def password_reset_page():
         else:
             put_html("ERROR")
 
+
+# This is the welcome hub where the user will start the journey of either signing in the account or logging in
 @config(theme="dark")
 def welcome_page():
     clear()
@@ -534,8 +540,6 @@ def welcome_page():
         """<h3>TIn the near future, we will plan to expand the XP bank to the limit by working together with other bank to allow an proper and fair way to work with your money
         and see what the best options such at looking at loans, mortgages, saving and investment with the help of other banks</h3>""").style(
         "text-align:center;")
-
-
 
 # This is the route section for the program
 if __name__ == '__main__':
