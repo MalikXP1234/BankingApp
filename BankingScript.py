@@ -1,5 +1,5 @@
 import random
-from venv import create
+
 
 from pywebio.input import *
 from pywebio.output import *
@@ -150,9 +150,9 @@ class LoansAccount:
 AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadxpmalik@gmail.com", "342424234",
                                 "eqqwdwe"))  # Admin account :>)
 
-BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))  # Admin bank account :>)
+BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", "100000", 10))  # Admin bank account :)
 
-PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com")) # This is a example class
+PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com")) # This is aa example class
 
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
@@ -203,6 +203,10 @@ def user_signup():
     clear()
     back_button("?app=login")
     put_html("<h1>Sign Up</h1>")
+
+    put_html("<h3>When doing your Signing up, Make sure to use no spaces when inputting your name. </h3>").style("text-align:center;")
+
+    put_html("<h3>please use (- or _ ) instead of spaces  </h3>").style("text-align:center;")
 
     signup_data = input_group('Add user', [
         input('Full Name', type=TEXT, name='FullName', required=True),
@@ -483,7 +487,7 @@ def payment_page():
                   </div>""")
 
 
-    # another action input to ask user to input like account or pin or anything like that or create an custom pin or account number from class
+    # another action input to ask user to input like account or pin or anything like that or create a custom pin or account number from class
 
 # This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
@@ -509,10 +513,29 @@ def welcome_page():
     put_html("<h1>Welcome Page</h1>").style("text-align:center;")
 
     put_html(
-        "<h2>Welcome to the XP App welcome page, this is where you will be able to find the login and sign up button to get access to our page</h2>").style(
+        "<h3>Welcome to the XP App welcome page, this is where you will be able to find the login and sign up button to get access to our page, Just look before this text</h3>").style(
         "text-align:center;")
 
     put_buttons(["Register", "Login"], onclick=[user_signup, user_login]).style("text-align:center;")
+
+    put_html("<h1>About</h1>").style("text-align:center;")
+
+    put_html(
+        """<h3>This is one of the top most used bank system created by the famous malik. Its an unique piece of art that he has made. Very simple to create an account,
+        and very easy to create payee account to allow you to transfer your money.
+        
+        The best thing is that you can even create money within the system with a single click in our system, Find out more in the XP bank Premium pass
+        </h3>""").style(
+        "text-align:center;")
+
+    put_html("<h1>Products</h1>").style("text-align:center;")
+
+    put_html(
+        """<h3>TIn the near future, we will plan to expand the XP bank to the limit by working together with other bank to allow an proper and fair way to work with your money
+        and see what the best options such at looking at loans, mortgages, saving and investment with the help of other banks</h3>""").style(
+        "text-align:center;")
+
+
 
 # This is the route section for the program
 if __name__ == '__main__':
