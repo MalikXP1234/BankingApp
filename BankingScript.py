@@ -175,6 +175,8 @@ def user_login():
     username = data["name"]
     password = data["password"]
 
+    # use a loop here so it keeps checking if the data is correct and if not then will send the user back with security stuff
+
     for row in open("data_file.txt", "r").readlines():
         data = row.split()
 
@@ -219,9 +221,23 @@ def user_signup():
         input('password', type=TEXT, name='password', required=True),
         actions('', [
             {'label': 'Save', 'value': 'save'},
-            {'label': 'Save and add next', 'value': 'save_and_continue'},
         ], name='action', help_text='actions'),
     ])
+
+    put_code(signup_data)
+
+    if " " in signup_data["FullName"]:  # this checks if there is an space in the Fullname
+        toast("please dont put spaces in the full name")
+        user_signup()
+
+    if len(signup_data["password"]) <= 4:  # this checks if the password is too small
+        toast("your password is too small")
+        user_signup()
+
+    if "@" not in signup_data["email_address"]:  # This checks if there is the At symbol in the email address
+        toast("please put @ in your email address")
+        user_signup()
+
 
     fullname = signup_data["FullName"]
     username = signup_data["username"]
@@ -237,8 +253,6 @@ def user_signup():
     login_file.close()
 
     toast(f"{account}")
-
-    put_code(signup_data)
 
 # This is when the user can log out if they want to
 def user_logout():
