@@ -632,17 +632,8 @@ def transfer_page():
                     toast("sorry for wasting your time")
                     transfer_page()
 
-
-
-
-
-
-    else:
-        toast("that's fine")
-
-
-
-
+            if options == "no":
+                home_page()
 
 # This is the welcome hub where the user will start the journey of either signing in the account or logging in
 @config(theme="dark")
