@@ -162,14 +162,7 @@ class LoansAccount:
     LoanName = None
 
 
-# These are example class items that has been created to show you how it would look like if someone were to input data
 
-AccountList.append(LoginAccount("AadamMalik", "Malik_xp", 25 / 11 / 2005, "adadxpmalik@gmail.com", "342424234",
-                                "eqqwdwe"))
-
-BankList.append(BankAccount("AadamMalik", "1234567", "This is a placeholder account", 100000, 10))
-
-PayeeList.append(PayeeAccount("Bob", "023123312", "bobwillwin@gmail.com"))
 
 
 # This is the back button that allows you to take the user into different pages
@@ -258,6 +251,7 @@ def user_signup():
         toast("please put @ in your email address")
         user_signup()
 
+    # This gets the data from the input group into variables
     fullname = signup_data["FullName"]
     username = signup_data["username"]
     dob = signup_data["DOF"]
@@ -265,20 +259,19 @@ def user_signup():
     phone_number = signup_data["phone_number"]
     password = signup_data["password"]
 
+    # This Created the Class object for the class
     account = LoginAccount(fullname, username, dob, email_address, phone_number, password)
 
+    AccountList.append(account)
+
+    # This opens the Data_file.txt which will write data onto the text file which would then get read by the login
     login_file = open("data_file.txt", "w")
-    login_file.write(f"{account}")
+    login_file.write(f"{fullname}, {username}, {dob}, {email_address}, {phone_number}, {password} " + "/n")
     login_file.close()
 
-    toast(f"{account}")
+    toast(f"Your account has been created :D")
 
-
-# This is when the user can log out if they want to
-def user_logout():
-    clear()
-    put_html("<h1>Logout</h1>")
-
+    user_login()
 
 # This allows the user to create the bank account
 def create_bank():
@@ -289,7 +282,7 @@ def create_bank():
     create_data = input_group("Please input your data", [
         input("what would you like to call your bank account", name="account", required=True),
         input("Please enter your 6 digit pin code so you can have protection", name="pin", required=True),
-        input("How much money would you like to put into your account?", name="money", required=True)
+        input("How much money would you like to put into your account?", name="money", type= NUMBER, required=True)
     ])
 
     if len(create_data["pin"]) == 6:
@@ -308,17 +301,22 @@ def create_bank():
         account_money = create_data["money"]
         BankList.append(BankAccount(account_name, account_number, pin_number, account_money, UID))
 
-        put_html(f"""<div class="card" style="width: 20rem;">
+        put_html(f"""    <div class="py-3 text-center container ">
+<div class="card mx-auto" style="width: 25rem;">
   <div class="card-body">
-    <h5 class="card-title">Current data</h5>
-    <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
-    <p class="card-text">Account Name : {account_name}</p>
+   <h5 class="card-title">--------Current data--------</h5>
+   <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
+     <ul class="list-group list-group-flush">
+  <p class="card-text">Account Name : {account_name}</p>
     <p class="card-text">Personal Name : {profile_name}</p>
     <p class="card-text">Account Number : {account_number}</p>
     <p class="card-text">PIN : {pin_number}</p>
     <p class="card-text">Balance : {account_money}</p>
+  </ul>
   </div>
-</div>""").style("text-align:center;")
+  <h5 class="card-title">------------------------------</h5>
+</div>
+</div>""")
     else:
         toast("please input 6 Digit")
         home_page()
@@ -353,15 +351,20 @@ def create_payee():
     person_email = create_person["person_email"]
     PayeeList.append(PayeeAccount(person_name, person_number, person_email))
 
-    put_html(f"""<div class="card" style="width: 20rem;">
+    put_html(f"""<div class="py-3 text-center container ">
+    <div class="card mx-auto" style="width: 25rem;">
       <div class="card-body">
-        <h5 class="card-title">Current data</h5>
-        <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
-        <p class="card-text">Person Name : {person_name}</p>
+       <h5 class="card-title">--------Current data--------</h5>
+       <h6 class="card-subtitle mb-2 text-body-secondary">here you can see what we have created for you</h6>
+         <ul class="list-group list-group-flush">
+         <p class="card-text">Person Name : {person_name}</p>
         <p class="card-text">Person Number : {person_number}</p>
         <p class="card-text">Person Email : {person_email}</p>
+      </ul>
       </div>
-    </div>""").style("text-align:center;")
+      <h5 class="card-title">------------------------------</h5>
+    </div>
+    </div>""")
 
     options = actions("Does this look good for your new payee?", ['Yes', 'No'])
 
@@ -397,7 +400,7 @@ def home_page():
             put_html(f"""<div class="py-3 text-center container ">
 <div class="card mx-auto" style="width: 25rem;">
   <div class="card-body">
-    <h5 class="card-title">{account.BankName}</h5>
+    <h5 class="card-title">Bank Name :{account.BankName}</h5>
      <ul class="list-group list-group-flush">
     <li class="list-group-item">Account Number: {account.BankNumber}</li>
     <li class="list-group-item"> Account Code: {account.BankCode}</li>
@@ -463,7 +466,11 @@ def product_page():
     <h5 class="card-title">[LOAN NAME]</h5>
   </ul>
   </div>
-  <a href="#" class="btn btn-primary">Select this LOAN/a>
+   <ul class="list-group list-group-flush">
+    <li class="list-group-item">Account Number: {account.BankNumber}</li>
+    <li class="list-group-item"> Account Code: {account.BankCode}</li>
+    <li class="list-group-item">Balance: {account.BankBalance}</li>
+  </ul>
 </div>
 </div>""")
 
@@ -506,28 +513,31 @@ def update_page():
 @config(theme="dark")
 def payment_page():
     clear()
-
     back_button("?app=profile")
-
     put_html(navbar)
-
-    put_html("<h1>Payment Page</h1>")
-    put_html("<h2>Select Payee</h2>")
+    put_html("<h1>Payee  Page</h1>")
+    put_html("<h2>Here you can find who you have created as your payee</h2>")
 
     options = actions("would you like to create a payee person", ['Yes', 'No'])
+
 
     if options == "Yes":
         create_payee()
     else:
-        for account in PayeeList:
-            put_html(f"""<div class="card">
-                  <div class="card-body">
-                     <h5 class="card-title">Person Name : {account.PayeeName}</h5>
-                     <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Person Number : {account.PayeeEmail}</li>
-                    <li class="list-group-item">Person Email : {account.PayeeNumber}]</li>
-                  </ul>
-                  </div>""")
+        if not PayeeList: # Checks if the list is empty
+            toast("Please create an Payee Person to see your list")
+            payment_page()
+        else:
+            for account in PayeeList: # If the list is not Empty then it will output the data from the class
+                put_html(f"""<div class="card">
+                            <div class="card-body">
+                               <h5 class="card-title">Person Name : {account.PayeeName}</h5>
+                               <ul class="list-group list-group-flush">
+                              <li class="list-group-item">Person Number : {account.PayeeEmail}</li>
+                              <li class="list-group-item">Person Email : {account.PayeeNumber}]</li>
+                            </ul>
+                            </div>""")
+
 
     # another action input to ask user to input like account or pin or anything like that or create a custom pin or account number from class
 
@@ -559,6 +569,9 @@ def transfer_page():
     put_html("<h1>Transfer Page Page</h1>")
 
     # This uses two lists to get the data, depending on what the user has chosen in the action menu
+
+    if not BankList and not PayeeList:
+        toast("Please create an account and payee to transfer your money")
 
     for data in BankList:
 
@@ -613,7 +626,7 @@ def transfer_page():
 
 
 
-                options2 = slider("how much would you like to give to your payee?", value=(data.BankBalance / 2), min_value=0,
+                options2 = slider("how much would you like to give to your payee?", value=(int(data.BankBalance) / 2), min_value=0,
                                   max_value=data.BankBalance) # Lists the amount of money from the specific bank money
 
                 last_option = actions("Do you want to make this transaction???",["yes","no"])
@@ -671,7 +684,6 @@ if __name__ == '__main__':
         "welcome_page": welcome_page,
         "login": user_login,
         "signup": user_signup,
-        "logout": user_logout,
         "home": home_page,
         "profile": profile_page,
         "product": product_page,
