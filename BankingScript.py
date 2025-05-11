@@ -125,7 +125,6 @@ class LoginAccount:
         cls.dob = replace_data_of_birth
         return cls.dob
 
-
 class BankAccount:
     BankName = None
     BankNumber = None
@@ -157,18 +156,9 @@ class PayeeAccount:
     def __str__(self):
         return f"{self.PayeeName}, {self.PayeeNumber}, {self.PayeeEmail}"
 
-
-class LoansAccount:
-    LoanName = None
-
-
-
-
-
 # This is the back button that allows you to take the user into different pages
 def back_button(link):
     put_html(f"""<a href={link} class="btn btn-primary">Back</a>""")
-
 
 # This is the login where the user can log their account with their data from the file
 @config(theme="dark")
@@ -211,7 +201,6 @@ def user_login():
 
 
 main_account = user_login
-
 
 # This is where the user can sign up and add their data onto the database
 @config(theme="dark")
@@ -262,11 +251,9 @@ def user_signup():
     # This Created the Class object for the class
     account = LoginAccount(fullname, username, dob, email_address, phone_number, password)
 
-    AccountList.append(account)
-
     # This opens the Data_file.txt which will write data onto the text file which would then get read by the login
     login_file = open("data_file.txt", "a")
-    login_file.write(f"{fullname} {username} {dob} {email_address} {phone_number} {password}\n")
+    login_file.write(f"{account}\n")
     login_file.close()
 
     toast(f"Your account has been created :D")
@@ -301,6 +288,8 @@ def create_bank():
         account_money = create_data["money"]
         BankList.append(BankAccount(account_name, account_number, pin_number, account_money, UID))
 
+        name_list.append(str(account_name))
+
         put_html(f"""    <div class="py-3 text-center container ">
 <div class="card mx-auto" style="width: 25rem;">
   <div class="card-body">
@@ -324,6 +313,7 @@ def create_bank():
     options = actions("Does this look good for your account?", ['Yes', 'No'])
 
     if options == "Yes":
+        toast("you now have a bank account!")
         home_page()
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
@@ -383,14 +373,6 @@ def home_page():
     put_html(navbar)
     put_html("<h1>Home Page</h1>")
 
-    put_html("""<div class="card">
-        <div class="card-body">
-            <div class="d-grid gap-2">
-                <a href="" class="btn btn-warning">Live chat</a>
-            </div>
-        </div>
-    </div>""")
-
     options = actions("would you like to create an bank account", ['Yes', 'No'])
 
     if options == "Yes":
@@ -410,7 +392,6 @@ def home_page():
 </div>
 </div>
 """)
-
 
 # This is the profile page which will output the users information and will have function to change
 @config(theme="dark")
@@ -448,7 +429,6 @@ def profile_page():
     if update == 'Yes Please':
         update_page()
 
-
 # This is the product page where the user can select loans for their account depending on their needs
 @config(theme="dark")
 def product_page():
@@ -457,22 +437,64 @@ def product_page():
     put_html(navbar)
     put_html("<h1>Product Page</h1>")
 
-    i = 5
 
-    for i in range(5):
-        put_html("""<div class="py-3 text-center container ">
-<div class="card mx-auto" style="width: 25rem;">
-  <div class="card-body">
-    <h5 class="card-title">[LOAN NAME]</h5>
-  </ul>
-  </div>
-   <ul class="list-group list-group-flush">
-    <li class="list-group-item">Account Number: {account.BankNumber}</li>
-    <li class="list-group-item"> Account Code: {account.BankCode}</li>
-    <li class="list-group-item">Balance: {account.BankBalance}</li>
-  </ul>
-</div>
-</div>""")
+    options = actions("would you like an loan out?", ['Yes', 'No'])
+
+    if options == "Yes":
+
+        if not name_list:
+            toast("please create an bank account")
+            home_page()
+
+        loan_data = input_group('Add user', [
+            slider("How much money would you like to take out?", value=(XPBank / 2), name='borrowed_money', min_value=0,
+                   max_value=XPBank),
+            input('How much time do you need to pay for this?', type=NUMBER, name='years', required=True),
+            select("Which account would you like to transfer money from?", options=name_list, name='name'),
+        ])
+
+        put_code(loan_data)
+
+        # Gets the data into the variables to calculate
+        money_taken = loan_data["borrowed_money"]
+        amount_years = loan_data["years"]
+        bank_name = loan_data["name"]
+
+        month_money = (((money_taken * 6) / amount_years) / 12)
+
+        print(month_money)
+
+        put_html(f"""<div class="py-3 text-center container ">
+                <div class="card mx-auto" style="width: 25rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">Here is your current Loan</h5>
+                  </ul>
+                  </div>
+                   <ul class="list-group list-group-flush">
+                    <li class="list-group-item">So you want to take out: {money_taken} pounds</li>
+                    <li class="list-group-item"> You will pay it back in: {amount_years} years</li>
+                    <li class="list-group-item"> The current interest Rate is %6</li>
+                    <li class="list-group-item"> Therefore, month payment will be {month_money}</li>
+                    <li class="list-group-item">You have chosen {bank_name} as ur main bank account</li>
+                  </ul>
+                </div>
+                </div>""")
+
+        final = actions("Is this ok for you?", ['Yes', 'No'])
+
+        if final == "Yes":
+            for data in BankList:
+                    data.BankBalance += money_taken
+                    toast(f"you now have {data.BankBalance} in your bank account")
+                    home_page()
+
+        else:
+            toast("That is fine")
+            home_page()
+
+    else:
+        toast("That is fine")
+        home_page()
 
 
 # This allows the user to work on adding or replacing new data for the profile page by using class subroutines
@@ -581,10 +603,6 @@ def transfer_page():
                               ['Yes', 'No'])
 
             if options == "Yes":
-
-                for i in AccountList:
-                    name_list.append(str(i.fullname)) # Puts all the data from the account into the list for the select function
-
                 if not name_list: # Checks if there is any accounts, if there isn't any then it will take user back
                     toast("please create an account")
                     transfer_page()
