@@ -265,8 +265,8 @@ def user_signup():
     AccountList.append(account)
 
     # This opens the Data_file.txt which will write data onto the text file which would then get read by the login
-    login_file = open("data_file.txt", "w")
-    login_file.write(f"{fullname}, {username}, {dob}, {email_address}, {phone_number}, {password} " + "/n")
+    login_file = open("data_file.txt", "a")
+    login_file.write(f"{fullname} {username} {dob} {email_address} {phone_number} {password}\n")
     login_file.close()
 
     toast(f"Your account has been created :D")
