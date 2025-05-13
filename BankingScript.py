@@ -1,9 +1,11 @@
+# Aadam Malik
+# W24001073
+
 import random
 from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 from unicodedata import decimal
-
 
 # Contains all the User Accounts
 AccountList = []
@@ -75,7 +77,7 @@ navbar = """<div class="fixed-bottom">
   </div>"""
 
 # THIS IS THE BANK CURRENCY
-XPBank = 1000000
+XPBank = 100000
 
 # this is global variables for profile page
 profile_name = ""
@@ -95,7 +97,7 @@ person_name = ""
 person_number = 0
 person_email = ""
 
-
+# For the Login account
 class LoginAccount:
     fullname = None
     username = None
@@ -135,6 +137,7 @@ class LoginAccount:
         cls.dob = replace_data_of_birth
         return cls.dob
 
+# For the Bank accounts
 class BankAccount:
     BankName = None
     BankNumber = None
@@ -152,6 +155,7 @@ class BankAccount:
     def __str__(self):
         return f"{self.BankName}, {self.BankNumber}, {self.BankCode}, {self.BankBalance}"
 
+# For the Payee account
 class PayeeAccount:
     PayeeName = None
     PayeeNumber = None
@@ -181,15 +185,18 @@ def user_login():
         input("Enter username: ", name="name", required=True),
         input("Enter password: ", name="password", required=True, type=PASSWORD)], cancelable=True)
 
-    username = data["name"]
-    password = data["password"]
+    username1 = data["name"]
+    password1 = data["password"]
 
     # use a loop here so it keeps checking if the data is correct and if not then will send the user back with security stuff
-
     for row in open("data_file.txt", "r").readlines():
         data = row.split()
 
-        if username == data[1] and password == data[5]:
+        username2 = data[1]
+        password2 = data[5]
+
+        # This checks if the username and password is the same
+        if username1 == username2 and password1 == password2:
             global profile_name
             global profile_date_of_birth
             global profile_email
@@ -200,14 +207,13 @@ def user_login():
             profile_email = data[3]
             profile_number = data[4]
 
+            # This gets the data from the file and creates the class item
             account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
             AccountList.append(account)
 
             toast("You now have logged in :)")
             home_page()
-
     else:
-        toast("incorrect data, please refresh the page")
         user_login()
 
 main_account = user_login
@@ -395,7 +401,7 @@ def home_page():
         toast("you need to create an bank account to see the data")
         home_page()
 
-    else:
+    elif options == "No":
         for account in BankList:
                 put_html(f"""<div class="py-3 text-center container ">
         <div class="card mx-auto" style="width: 25rem;">
@@ -404,7 +410,7 @@ def home_page():
              <ul class="list-group list-group-flush">
             <li class="list-group-item">Account Number: {account.BankNumber}</li>
             <li class="list-group-item"> Account Code: {account.BankCode}</li>
-            <li class="list-group-item">Balance: {account.BankBalance}</li>
+            <li class="list-group-item">Balance: {round(account.BankBalance)}</li>
           </ul>
           </div>
         </div>
@@ -467,11 +473,9 @@ def product_page():
         loan_data = input_group('Add user', [
             slider("How much money would you like to take out?", value=(XPBank / 2), name='borrowed_money', min_value=0,
                    max_value=XPBank),
-            input('How much time do you need to pay for this?', type=NUMBER, name='years', required=True),
+            input('How many years do you need to pay back?', type=NUMBER, name='years', required=True),
             select("Which account would you like to transfer money from?", options=name_list, name='name'),
         ])
-
-        put_code(loan_data)
 
         # Gets the data into the variables to calculate
         money_taken = loan_data["borrowed_money"]
@@ -480,8 +484,6 @@ def product_page():
 
         month_money = (((money_taken * 6) / amount_years) / 12)
 
-        print(month_money)
-
         put_html(f"""<div class="py-3 text-center container ">
                 <div class="card mx-auto" style="width: 25rem;">
                   <div class="card-body">
@@ -489,10 +491,10 @@ def product_page():
                   </ul>
                   </div>
                    <ul class="list-group list-group-flush">
-                    <li class="list-group-item">So you want to take out: {money_taken} pounds</li>
+                    <li class="list-group-item">So you want to take out: {round(money_taken)} pounds</li>
                     <li class="list-group-item"> You will pay it back in: {amount_years} years</li>
-                    <li class="list-group-item"> The current interest Rate is %6</li>
-                    <li class="list-group-item"> Therefore, month payment will be {month_money}</li>
+                    <li class="list-group-item"> The current interest Rate is 6%</li>
+                    <li class="list-group-item"> Therefore, month payment will be {round(month_money)}</li>
                     <li class="list-group-item">You have chosen {bank_name} as ur main bank account</li>
                   </ul>
                 </div>
@@ -503,7 +505,7 @@ def product_page():
         if final == "Yes":
             for data in BankList:
                     data.BankBalance += money_taken
-                    toast(f"you now have {data.BankBalance} in your bank account")
+                    toast(f"you now have {round(data.BankBalance)} in your bank account")
                     home_page()
 
         else:
@@ -519,6 +521,10 @@ def update_page():
     clear()
     back_button("?app=profile")
     put_html("<h1>Update Profile</h1>")
+
+    put_html("<h4>This is where you can update your data</h4>")
+    put_html("<h3>You can update Username, Date of birth, Email Address and Phone number</h3>")
+
 
     option = select("What would you like to update?",  # options for the user to choose from
                     options=["Username", "Data of birth", "Email address", "Phone number"])
@@ -592,10 +598,11 @@ def password_reset_page():
         item = row.split()
 
         if item[3] == old_email:
-            put_html(
-                "<h1>I am happy to say that the system has found your email so please look at it to change your password</h1>")
+            toast("I am happy to say that the system has found your email so please look at it to change your password")
+            user_login()
         else:
             put_html("ERROR")
+            password_reset_page()
 
 # This is the page where the user can transfer their money to the Payee account
 @config(theme="dark")
@@ -608,7 +615,7 @@ def transfer_page():
 
     put_html("<h3>This is where you can get loans to get some money</h3>")
 
-    put_html("<h4>You will be able to select which accounts gets the money<h4>")
+    put_html("<h4>You will be able to select which accounts gets the money / Make sure you have an account and payee to do the transaction<h4>")
 
     # This uses two lists to get the data, depending on what the user has chosen in the action menu
 
@@ -676,7 +683,7 @@ def transfer_page():
                                                                             <div class="card-body">
                                                                               <h5 class="card-title">Current data</h5>
                                                                               <h6 class="card-subtitle mb-2 text-body-secondary">Here is your account after the transaction</h6>
-                                                                              <p class="card-text">Balance : {data.BankBalance}</p>
+                                                                              <p class="card-text">Balance : {round(data.BankBalance)}</p>
                                                                             </div>
                                                                           </div>""").style("text-align:center;")
                 else:
@@ -711,7 +718,7 @@ def welcome_page():
     put_html("<h1>Products</h1>").style("text-align:center;")
 
     put_html(
-        """<h3>TIn the near future, we will plan to expand the XP bank to the limit by working together with other bank to allow an proper and fair way to work with your money
+        """<h3>In the near future, we will plan to expand the XP bank to the limit by working together with other bank to allow an proper and fair way to work with your money
         and see what the best options such at looking at loans, mortgages, saving and investment with the help of other banks</h3>""").style(
         "text-align:center;")
 
