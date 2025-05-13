@@ -203,10 +203,12 @@ def user_login():
             account = LoginAccount(data[0], data[1], data[2], data[3], data[4], data[5])
             AccountList.append(account)
 
+            toast("You now have logged in :)")
             home_page()
 
-        else:
-            toast("incorrect data, please refresh the page")
+    else:
+        toast("incorrect data, please refresh the page")
+        user_login()
 
 main_account = user_login
 
@@ -324,7 +326,8 @@ def create_bank():
         toast("you now have a bank account!")
         home_page()
     else:
-        toast("Sorry for the issue, please delete if you are unhappy")
+        toast("Sorry for the issue")
+        create_bank()
 
 # This allows the user to create the payee account
 @config(theme="dark")
@@ -379,25 +382,34 @@ def home_page():
     put_html(navbar)
     put_html("<h1>Home Page</h1>")
 
+    put_html("<h3>This is where you can create your Bank account</h3>")
+
+    put_html("<h4>When you have created your account, select no to not make, to see your account</h4>")
+
     options = actions("would you like to create an bank account", ['Yes', 'No'])
 
     if options == "Yes":
         create_bank()
+
+    elif not BankList:
+        toast("you need to create an bank account to see the data")
+        home_page()
+
     else:
         for account in BankList:
-            put_html(f"""<div class="py-3 text-center container ">
-<div class="card mx-auto" style="width: 25rem;">
-  <div class="card-body">
-    <h5 class="card-title">Bank Name :{account.BankName}</h5>
-     <ul class="list-group list-group-flush">
-    <li class="list-group-item">Account Number: {account.BankNumber}</li>
-    <li class="list-group-item"> Account Code: {account.BankCode}</li>
-    <li class="list-group-item">Balance: {account.BankBalance}</li>
-  </ul>
-  </div>
-</div>
-</div>
-""")
+                put_html(f"""<div class="py-3 text-center container ">
+        <div class="card mx-auto" style="width: 25rem;">
+          <div class="card-body">
+            <h5 class="card-title">Bank Name : #{account.BankName}</h5>
+             <ul class="list-group list-group-flush">
+            <li class="list-group-item">Account Number: {account.BankNumber}</li>
+            <li class="list-group-item"> Account Code: {account.BankCode}</li>
+            <li class="list-group-item">Balance: {account.BankBalance}</li>
+          </ul>
+          </div>
+        </div>
+        </div>
+        """)
 
 # This is the profile page which will output the users information and will have function to change
 @config(theme="dark")
@@ -541,8 +553,11 @@ def payment_page():
     clear()
     back_button("?app=profile")
     put_html(navbar)
-    put_html("<h1>Payee  Page</h1>")
-    put_html("<h2>Here you can find who you have created as your payee</h2>")
+    put_html("<h1>Payee Page</h1>")
+
+    put_html("<h3>This is where you can create your Payee account</h3>")
+
+    put_html("<h4>When you have created your Payee, select no to not make, to see your Payee</h4>")
 
     options = actions("would you like to create a payee person", ['Yes', 'No'])
 
@@ -563,9 +578,6 @@ def payment_page():
                               <li class="list-group-item">Person Email : {account.PayeeNumber}]</li>
                             </ul>
                             </div>""")
-
-
-    # another action input to ask user to input like account or pin or anything like that or create a custom pin or account number from class
 
 # This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
@@ -592,6 +604,11 @@ def transfer_page():
     back_button("?app=payment_page")
     put_html(navbar)
     put_html("<h1>Transfer Page Page</h1>")
+
+
+    put_html("<h3>This is where you can get loans to get some money</h3>")
+
+    put_html("<h4>You will be able to select which accounts gets the money<h4>")
 
     # This uses two lists to get the data, depending on what the user has chosen in the action menu
 
