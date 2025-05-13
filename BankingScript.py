@@ -1,16 +1,26 @@
 import random
-
-
 from pywebio.input import *
 from pywebio.output import *
 from pywebio import start_server, config
 from unicodedata import decimal
 
+
+# Contains all the User Accounts
 AccountList = []
+
+# Contains all the Names of Bank Accounts
 name_list = []
+
+# Contains all the Bank Accounts
 BankList = []
+
+# Contains all the Payee Accounts
 PayeeList = []
+
+# Contains all the Names of the Payee Accounts
 PayeeList_name = []
+
+# Calculate the total sum for interest rate
 FullAmount = 0
 
 
@@ -142,7 +152,6 @@ class BankAccount:
     def __str__(self):
         return f"{self.BankName}, {self.BankNumber}, {self.BankCode}, {self.BankBalance}"
 
-
 class PayeeAccount:
     PayeeName = None
     PayeeNumber = None
@@ -198,7 +207,6 @@ def user_login():
 
         else:
             toast("incorrect data, please refresh the page")
-
 
 main_account = user_login
 
@@ -318,7 +326,6 @@ def create_bank():
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
 
-
 # This allows the user to create the payee account
 @config(theme="dark")
 def create_payee():
@@ -362,7 +369,6 @@ def create_payee():
         payment_page()
     else:
         toast("Sorry for the issue, please delete if you are unhappy")
-
 
 # This is where the user can select accounts and create them for data
 @config(theme="dark")
@@ -496,7 +502,6 @@ def product_page():
         toast("That is fine")
         home_page()
 
-
 # This allows the user to work on adding or replacing new data for the profile page by using class subroutines
 def update_page():
     clear()
@@ -530,7 +535,6 @@ def update_page():
             else:
                 toast("ERROR")
 
-
 # This is their payment method where the user can select different payee for user to give money
 @config(theme="dark")
 def payment_page():
@@ -563,7 +567,6 @@ def payment_page():
 
     # another action input to ask user to input like account or pin or anything like that or create a custom pin or account number from class
 
-
 # This is the page where the user can reset their password by giving their emails
 @config(theme="dark")
 def password_reset_page():
@@ -582,7 +585,7 @@ def password_reset_page():
         else:
             put_html("ERROR")
 
-
+# This is the page where the user can transfer their money to the Payee account
 @config(theme="dark")
 def transfer_page():
     clear()
@@ -694,7 +697,6 @@ def welcome_page():
         """<h3>TIn the near future, we will plan to expand the XP bank to the limit by working together with other bank to allow an proper and fair way to work with your money
         and see what the best options such at looking at loans, mortgages, saving and investment with the help of other banks</h3>""").style(
         "text-align:center;")
-
 
 # This is the route section for the program
 if __name__ == '__main__':
